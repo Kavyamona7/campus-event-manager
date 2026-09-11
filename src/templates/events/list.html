@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}Events — Campus Event Manager{% endblock %}
+
+{% block content %}
+
+<div class="page-title">
+    <h2>Events</h2>
+    <p>Browse and manage campus events.</p>
+</div>
+
+
+<div class="section">
+    
+    <!-- Filters -->
+
+    <form method="GET" action="{{ url_for('events.events') }}">
+
+        <div class="filter-bar">
+
+            <div>
+                <label for="title">Search title</label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="{{ title }}"
+                    placeholder="Search events..."
+                >
+            </div>
+
+            
+
+
+            <div>
+                <label for="category">Category</label>
+
+                <select id="category" name="category">
+
+                    <option value="">All categories</option>
+
+                    {% for category_option in categories %}
+
+                        <option
+                            value="{{ category_option }}"
+                            {% if selected_category == category_option %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ category_option }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+            </div>
+
+
+
+            <div>
+                <label for="status">Date</label>
+
+                <select id="status" name="status">
+
+                    <option value="">All events</option>
+
+                    <option
+                        value="upcoming"
+                        {% if selected_status == "upcoming" %}
+                            selected
+                        {% endif %}
+                    >
+                        Upcoming
+                    </option>
+
+                    <option
+                        value="past"
+                        {% if selected_status == "past" %}
+                            selected
+                        {% endif %}
+                    >
+                        Past
+                    </option>
+
+                </select>
+            </div>
+
+
+
+            <div>
+                <label for="tag">Tag</label>
+
+                <select id="tag" name="tag">
+
+                    <option value="">All tags</option>
+
+                    {% for tag_option in tags %}
+
+                        <option
+                            value="{{ tag_option }}"
+                            {% if selected_tag == tag_option %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ tag_option }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+            </div>
+
+
+
+            <div>
+                <label for="sort">Sort</label>
+
+                <select id="sort" name="sort">
+
+                    <option
+                        value="asc"
+                        {% if sort_order == "asc" %}
+                            selected
+                        {% endif %}
+                    >
+                        Oldest first
+                    </option>
+
+                    <option
+                        value="desc"
+                        {% if sort_order == "desc" %}
+                            selected
+                        {% endif %}
+                    >
+                        Newest first
+                    </option>
+
+                </select>
+            </div>
+
+
+
+            <div>
+                <button type="submit">
+                    Apply Filters
+                </button>
+
+                <a href="{{ url_for('events.events') }}">
+                    Clear
+                </a>
+            </div>
+
+        </div>
+
+    </form>
+
+
+    <h2>Event List</h2>
+
+
+    <div class="event-grid">
+
+        {% if events %}
+
+            {% for event in events %}
+
+                <div class="event-card">
+
+                    <span class="badge">
+                        {{ event.category }}
+                    </span>
+
+                    <h3>{{ event.title }}</h3>
+
+                    <p>
+                        <strong>Start:</strong>
+                        {{ event.startDate.strftime("%d/%m/%Y %H:%M") }}
+                    </p>
+
+                    <p>
+                        <strong>End:</strong>
+                        {{ event.endDate.strftime("%d/%m/%Y %H:%M") }}
+                    </p>
+
+                    <p>
+                        <strong>Location:</strong>
+                        {{ event.location.building }},
+                        {{ event.location.room }},
+                        {{ event.location.campus }}
+                    </p>
+
+                    <p>
+                        <strong>Capacity:</strong>
+                        {{ event.capacity }}
+                    </p>
+
+                    <p>
+                        <strong>Confirmed:</strong>
+                        {{ event.confirmedCount }}
+                        /
+                        {{ event.capacity }}
+                    </p>
+
+                    {% if event.confirmedCount >= event.capacity %}
+
+                        <span class="badge">
+                            FULL
+                        </span>
+
+                    {% endif %}
+
+                    <div class="progress">
+
+                        {% set percentage =
+                            (event.confirmedCount / event.capacity * 100)
+                            if event.capacity > 0 else 0
+                        %}
+
+                        <div
+                            class="progress-bar"
+                            style="width: {{ [percentage, 100] | min }}%;"
+                        ></div>
+
+                    </div>
+
+                    <p>
+                        <strong>Tags:</strong>
+                        {{ event.tags | join(", ") }}
+                    </p>
+                
+                <div class="event-actions">
+
+                    <a href="{{ url_for('events.event_details', event_id=event._id) }}">
+                        Details
+                    </a>
+
+                    <div class="event-actions">
+                        <a href="{{ url_for('events.edit_event', event_id=event._id) }}">
+                            Edit
+                        </a>
+                        
+                        <form
+                           method="POST"
+                           action="{{ url_for('events.delete_event', event_id=event._id) }}"
+                           style="display: inline;"
+                           onsubmit="return confirm('Are you sure you want to delete this event?');"
+                           >
+                           <button type="submit" class="delete-button">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+                
+             </div>
+            </div>
+        
+       
+            {% endfor %}
+
+        {% else %}
+
+            <p>No events found.</p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

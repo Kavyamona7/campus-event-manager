@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} — Campus Event Manager{% endblock %}
+
+{% block content %}
+
+<div class="page-title">
+    <h2>{{ page_title }}</h2>
+    <p>Create a new campus event.</p>
+</div>
+
+{% if errors %}
+    <div class="error-box">
+        <strong>Please fix the following:</strong>
+        <ul>
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+
+<form method="POST" class="event-form">
+
+    <div class="form-group">
+        <label for="title">Title *</label>
+        <input
+            type="text"
+            id="title"
+            name="title"
+            value="{{ form.get('title', '') }}"
+            required
+        >
+    </div>
+
+
+    <div class="form-group">
+        <label for="description">Description *</label>
+        <textarea
+            id="description"
+            name="description"
+            rows="5"
+            required
+        >{{ form.get('description', '') }}</textarea>
+    </div>
+
+
+    <div class="form-row">
+
+        <div class="form-group">
+            <label for="category">Category *</label>
+            <input
+                type="text"
+                id="category"
+                name="category"
+                value="{{ form.get('category', '') }}"
+                placeholder="e.g. Workshop"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="capacity">Capacity *</label>
+            <input
+                type="number"
+                id="capacity"
+                name="capacity"
+                min="1"
+                value="{{ form.get('capacity', '') }}"
+                required
+            >
+        </div>
+
+    </div>
+
+
+    <div class="form-group">
+        <label for="tags">Tags</label>
+        <input
+            type="text"
+            id="tags"
+            name="tags"
+            value="{{ form.get('tags', '') }}"
+            placeholder="e.g. AI, Data, Python"
+        >
+        <small>Separate multiple tags with commas.</small>
+    </div>
+
+
+    <div class="form-row">
+
+        <div class="form-group">
+            <label for="start_date">Start date & time *</label>
+            <input
+                type="datetime-local"
+                id="start_date"
+                name="start_date"
+                value="{{ form.get('start_date', '') }}"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="end_date">End date & time *</label>
+            <input
+                type="datetime-local"
+                id="end_date"
+                name="end_date"
+                value="{{ form.get('end_date', '') }}"
+                required
+            >
+        </div>
+
+    </div>
+
+
+    <h3>Location</h3>
+
+    <div class="form-row">
+
+        <div class="form-group">
+            <label for="building">Building *</label>
+            <input
+                type="text"
+                id="building"
+                name="building"
+                value="{{ form.get('building', '') }}"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="room">Room *</label>
+            <input
+                type="text"
+                id="room"
+                name="room"
+                value="{{ form.get('room', '') }}"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="campus">Campus *</label>
+            <input
+                type="text"
+                id="campus"
+                name="campus"
+                value="{{ form.get('campus', '') }}"
+                required
+            >
+        </div>
+
+    </div>
+
+
+    <div class="form-group">
+        <label for="organizer_id">Organizer *</label>
+
+        <select
+            id="organizer_id"
+            name="organizer_id"
+            required
+        >
+
+            <option value="">Select an organizer</option>
+
+            {% for organizer in organizers %}
+
+                <option
+                    value="{{ organizer._id }}"
+                    {% if form.get('organizer_id') == organizer._id|string %}
+                        selected
+                    {% endif %}
+                >
+                    {{ organizer.firstName }}
+                    {{ organizer.lastName }}
+                    — {{ organizer.email }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+    </div>
+
+
+    <div class="form-actions">
+
+        <button type="submit">
+            Create Event
+        </button>
+
+        <a href="{{ url_for('events.events') }}">
+            Cancel
+        </a>
+
+    </div>
+
+</form>
+
+{% endblock %}

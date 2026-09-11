@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics — Campus Event Manager{% endblock %}
+
+{% block content %}
+
+<div class="page-title">
+    <h2>Analytics</h2>
+    <p>MongoDB aggregation analysis of campus events and registrations.</p>
+</div>
+
+
+<!-- A. Registrations by Category -->
+<div class="section">
+
+    <h2>A. Registrations by Category</h2>
+
+    {% if data.by_category %}
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Number of Events</th>
+                        <th>Total Confirmed</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in data.by_category %}
+
+                        <tr>
+                            <td>{{ item._id }}</td>
+                            <td>{{ item.numberOfEvents }}</td>
+                            <td>{{ item.totalConfirmed }}</td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+        <p>No category data available.</p>
+    {% endif %}
+
+</div>
+
+
+<!-- B. Top 5 Events -->
+<div class="section">
+
+    <h2>B. Top 5 Events</h2>
+
+    {% if data.top_events %}
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Category</th>
+                        <th>Capacity</th>
+                        <th>Confirmed</th>
+                        <th>Occupancy</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for event in data.top_events %}
+
+                        <tr>
+                            <td>{{ event.title }}</td>
+                            <td>{{ event.category }}</td>
+                            <td>{{ event.capacity }}</td>
+                            <td>{{ event.confirmedCount }}</td>
+                            <td>
+                                {{ "%.1f"|format(event.occupancy) }}%
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+        <p>No event data available.</p>
+    {% endif %}
+
+</div>
+
+
+<!-- C. Users With No Registration -->
+<div class="section">
+
+    <h2>C. Users With No Registration</h2>
+
+    {% if data.no_registration %}
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for user in data.no_registration %}
+
+                        <tr>
+                            <td>
+                                {{ user.firstName }}
+                                {{ user.lastName }}
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.department }}</td>
+                            <td>{{ user.role }}</td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+        <p>All users have at least one registration.</p>
+    {% endif %}
+
+</div>
+
+
+<!-- D. Events Above Average Occupancy -->
+<div class="section">
+
+    <h2>D. Events Above Average Occupancy</h2>
+
+    <p>
+        Average occupancy:
+        <strong>
+            {{ "%.1f"|format(data.above_average.averageOccupancy) }}%
+        </strong>
+    </p>
+
+    {% if data.above_average.events %}
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Category</th>
+                        <th>Capacity</th>
+                        <th>Confirmed</th>
+                        <th>Occupancy</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for event in data.above_average.events %}
+
+                        <tr>
+                            <td>{{ event.title }}</td>
+                            <td>{{ event.category }}</td>
+                            <td>{{ event.capacity }}</td>
+                            <td>{{ event.confirmedCount }}</td>
+                            <td>
+                                {{ "%.1f"|format(event.occupancy) }}%
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+        <p>No events are above average occupancy.</p>
+    {% endif %}
+
+</div>
+
+
+<!-- E. Most Used Tags -->
+<div class="section">
+
+    <h2>E. Most Used Tags</h2>
+
+    {% if data.tags %}
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Tag</th>
+                        <th>Usage Count</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for tag in data.tags %}
+
+                        <tr>
+                            <td>{{ tag._id }}</td>
+                            <td>{{ tag.count }}</td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+        <p>No tags available.</p>
+    {% endif %}
+
+</div>
+
+
+<!-- F. Events by Month -->
+<div class="section">
+
+    <h2>F. Events by Month</h2>
+
+    {% if data.by_month %}
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Month</th>
+                        <th>Number of Events</th>
+                        <th>Confirmed Registrations</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in data.by_month %}
+
+                        <tr>
+                            <td>{{ item.year }}</td>
+                            <td>{{ item.month }}</td>
+                            <td>{{ item.numberOfEvents }}</td>
+                            <td>{{ item.registrations }}</td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+        <p>No monthly data available.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

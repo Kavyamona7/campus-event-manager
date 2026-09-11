@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }} — Campus Event Manager{% endblock %}
+
+{% block content %}
+
+<div class="page-title">
+    <h2>{{ event.title }}</h2>
+    <p>Event details and registrations.</p>
+</div>
+
+<div class="event-detail-card">
+
+    <div class="detail-header">
+        <span class="badge">{{ event.category }}</span>
+
+        {% if event.confirmedCount >= event.capacity %}
+            <span class="badge">FULL</span>
+        {% endif %}
+    </div>
+
+    <h2>{{ event.title }}</h2>
+
+    <p>{{ event.description }}</p>
+
+    <div class="detail-grid">
+
+        <div>
+            <strong>Category</strong>
+            <p>{{ event.category }}</p>
+        </div>
+
+        <div>
+            <strong>Capacity</strong>
+            <p>{{ event.capacity }}</p>
+        </div>
+
+        <div>
+            <strong>Confirmed registrations</strong>
+            <p>{{ event.confirmedCount }} / {{ event.capacity }}</p>
+        </div>
+
+        <div>
+            <strong>Occupancy</strong>
+            <p>{{ "%.1f"|format(event.occupancy) }}%</p>
+        </div>
+
+        <div>
+            <strong>Start</strong>
+            <p>{{ event.startDate.strftime("%d/%m/%Y %H:%M") }}</p>
+        </div>
+
+        <div>
+            <strong>End</strong>
+            <p>{{ event.endDate.strftime("%d/%m/%Y %H:%M") }}</p>
+        </div>
+
+        <div>
+            <strong>Location</strong>
+            <p>
+                {{ event.location.building }},
+                {{ event.location.room }},
+                {{ event.location.campus }}
+            </p>
+        </div>
+
+        <div>
+            <strong>Organizer</strong>
+            {% if event.organizer %}
+                <p>
+                    {{ event.organizer.firstName }}
+                    {{ event.organizer.lastName }}<br>
+                    {{ event.organizer.email }}
+                </p>
+            {% else %}
+                <p>Unknown organizer</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div class="detail-section">
+        <h3>Tags</h3>
+
+        {% for tag in event.tags %}
+            <span class="tag">{{ tag }}</span>
+        {% endfor %}
+    </div>
+
+</div>
+
+
+<div class="section">
+
+    <h2>Register a User</h2>
+
+    {% if users %}
+
+        <form method="POST"
+              action="{{ url_for('events.register_for_event', event_id=event._id) }}"
+              class="registration-form">
+
+            <select name="user_id" required>
+
+                <option value="">
+                    Select a user
+                </option>
+
+                {% for user in users %}
+
+                    <option value="{{ user._id }}">
+                        {{ user.firstName }}
+                        {{ user.lastName }}
+                        — {{ user.email }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">
+                Register User
+            </button>
+
+        </form>
+
+    {% else %}
+
+        <p>No users available.</p>
+
+    {% endif %}
+
+</div>
+
+
+<div class="section">
+
+    <h2>Participants</h2>
+
+    {% if registered_users %}
+
+        <div class="participant-list">
+
+            {% for registration in registered_users %}
+
+                <div class="participant">
+
+                    <div>
+                        <strong>
+                            {{ registration.user.firstName }}
+                            {{ registration.user.lastName }}
+                        </strong>
+
+                        <p>
+                            {{ registration.user.email }}
+                        </p>
+
+                        <small>
+                            Status: {{ registration.status }}
+                        </small>
+                    </div>
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'events.cancel_registration',
+                            event_id=event._id,
+                            user_id=registration.user._id
+                        ) }}"
+                    >
+                        <button type="submit" class="delete-button">
+                            Cancel
+                        </button>
+                    </form>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p>No participants registered yet.</p>
+
+    {% endif %}
+
+</div>
+
+
+<div class="form-actions">
+
+    <a href="{{ url_for('events.events') }}">
+        ← Back to Events
+    </a>
+
+    <a href="{{ url_for(
+        'events.edit_event',
+        event_id=event._id
+    ) }}">
+        Edit Event
+    </a>
+
+</div>
+
+{% endblock %}

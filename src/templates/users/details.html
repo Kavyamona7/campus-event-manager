@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ user.firstName }} {{ user.lastName }} — Campus Event Manager
+{% endblock %}
+
+{% block content %}
+
+<div class="page-title">
+
+    <h2>
+        {{ user.firstName }} {{ user.lastName }}
+    </h2>
+
+    <p>
+        User information and event participation history.
+    </p>
+
+</div>
+
+
+<div class="event-detail-card">
+
+    <h2>User Information</h2>
+
+    <div class="detail-grid">
+
+        <div>
+            <strong>First name</strong>
+            <p>{{ user.firstName }}</p>
+        </div>
+
+        <div>
+            <strong>Last name</strong>
+            <p>{{ user.lastName }}</p>
+        </div>
+
+        <div>
+            <strong>Email</strong>
+            <p>{{ user.email }}</p>
+        </div>
+
+        <div>
+            <strong>Department</strong>
+            <p>{{ user.department }}</p>
+        </div>
+
+        <div>
+            <strong>Role</strong>
+            <p>{{ user.role }}</p>
+        </div>
+
+        <div>
+            <strong>Interests</strong>
+
+            <p>
+                {% if user.interests %}
+                    {{ user.interests | join(", ") }}
+                {% else %}
+                    None
+                {% endif %}
+            </p>
+
+        </div>
+
+        <div>
+            <strong>Upcoming registrations</strong>
+            <p>{{ user.upcomingCount }}</p>
+        </div>
+
+        <div>
+            <strong>Past registrations</strong>
+            <p>{{ user.pastCount }}</p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="section">
+
+    <h2>Registered Events</h2>
+
+    {% if user.registrations %}
+
+        <div class="event-grid">
+
+            {% for event in user.registrations %}
+
+                <div class="event-card">
+
+                    <span class="badge">
+                        {{ event.registrationStatus }}
+                    </span>
+
+                    <h3>
+                        {{ event.title }}
+                    </h3>
+
+                    <p>
+                        <strong>Category:</strong>
+                        {{ event.category }}
+                    </p>
+
+                    <p>
+                        <strong>Start:</strong>
+                        {{ event.startDate.strftime(
+                            "%d/%m/%Y %H:%M"
+                        ) }}
+                    </p>
+
+                    <p>
+                        <strong>Location:</strong>
+                        {{ event.location.building }},
+                        {{ event.location.room }},
+                        {{ event.location.campus }}
+                    </p>
+
+                    <p>
+                        <strong>Registered:</strong>
+                        {{ event.registeredAt.strftime(
+                            "%d/%m/%Y %H:%M"
+                        ) }}
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p>
+            This user is not registered for any event.
+        </p>
+
+    {% endif %}
+
+</div>
+
+
+<div class="form-actions">
+
+    <a href="{{ url_for('users.users') }}">
+        ← Back to Users
+    </a>
+
+    <a href="{{ url_for(
+        'users.edit_user',
+        user_id=user._id
+    ) }}">
+        Edit User
+    </a>
+
+</div>
+
+{% endblock %}
