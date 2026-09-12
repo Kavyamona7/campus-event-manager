@@ -9,6 +9,12 @@
     <p>Manage campus users and their event participation.</p>
 </div>
 
+<div class="page-header-actions">
+    <a href="{{ url_for('users.create_user') }}" class="primary-button">
+        + Create User
+    </a>
+</div>
+
 <div class="section">
 
     <form method="GET" action="{{ url_for('users.users') }}">

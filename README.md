@@ -1,26 +1,6 @@
-Excellent 🎉 **Final application check passed.**
+CAMPUS EVENT MANAGER 
 
-Your core project is now functional. Let's move quickly through the submission work.
-
-# Step 12 — README + GitHub preparation
-
-The assignment specifically requires a README containing the project purpose, technologies, installation, MongoDB configuration, initialization/seed, running instructions, pages, and author. 
-
-## 12.1 Create/update `README.md`
-
-Open the root file:
-
-```text
-campus-event-manager/
-└── README.md
-```
-
-Replace its contents with:
-
-````markdown
-# Campus Event Manager
-
-## Project Overview
+1. Project Overview
 
 Campus Event Manager is a small web application developed as part of the MSc Data Engineering & Cloud Computing NoSQL project.
 
@@ -28,9 +8,7 @@ The application uses MongoDB to manage campus users, events, registrations and e
 
 The project demonstrates MongoDB document modeling, CRUD operations, embedded documents, references, indexes and aggregation pipelines.
 
----
-
-## Technologies
+2. Technologies
 
 - Python 3.14
 - Flask
@@ -41,11 +19,9 @@ The project demonstrates MongoDB document modeling, CRUD operations, embedded do
 - Jinja2
 - python-dotenv
 
----
 
-## Project Structure
+3. Project Structure
 
-```text
 campus-event-manager/
 │
 ├── database/
@@ -88,20 +64,16 @@ campus-event-manager/
 ├── README.md
 └── requirements.txt
 
-Database
+4. Database
 
-The application uses the following MongoDB database:
-
-campus_events
+The application uses the following MongoDB database: campus_events
 
 The database contains two main collections:
 
 users
 events
 
-MongoDB is configured locally by default:
-
-mongodb://127.0.0.1:27017
+MongoDB is configured locally by default: mongodb://127.0.0.1:27017
 Data Model
 Users
 
@@ -118,7 +90,7 @@ createdAt
 
 The email field has a unique index.
 
-Events
+5. Events
 
 Each event contains:
 
@@ -146,16 +118,18 @@ status
 The event organizer is referenced using organizerId.
 
 Installation
-1. Clone the repository
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+
+a. Clone the repository
+git clone <https://github.com/Kavyamona7>
 cd campus-event-manager
-2. Create a virtual environment
+
+b. Create a virtual environment
 
 On Windows PowerShell: python -m venv .venv
 
 Activate the environment:  .\.venv\Scripts\Activate.ps1
 
-3. Install dependencies: python -m pip install -r requirements.txt
+c. Install dependencies: python -m pip install -r requirements.txt
 MongoDB Configuration
 
 Create a .env file in the project root:
@@ -165,7 +139,7 @@ MONGO_DB_NAME=campus_events
 
 The .env file is excluded from Git using .gitignore.
 
-Initialize the Database
+d. Initialize the Database
 
 Make sure the MongoDB server is running.
 
@@ -197,7 +171,7 @@ A full-capacity event
 
 The seed script is reproducible and can be executed again after database initialization.
 
-Run the Application
+5. Run the Application
 
 Activate the virtual environment:  .\.venv\Scripts\Activate.ps1
 
@@ -205,7 +179,8 @@ Start the Flask application: python src/app.py
 
 Open the application in a browser: http://127.0.0.1:5000/
 
-Application Pages
+Application Pages that are visible are:
+ 
 1. Dashboard
 
 The Dashboard displays:

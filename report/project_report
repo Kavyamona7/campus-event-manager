@@ -1,0 +1,184 @@
+Campus Event Manager
+Technical Project Report
+
+MSc Data Engineering & Cloud Computing
+Student: Kavya Basappa
+MongoDB • Flask • PyMongo
+
+1. Project Overview
+Campus Event Manager is a web application developed as part of the NoSQL project. The objective is to design and implement a MongoDB database and a lightweight web application for managing campus users, events, registrations and analytical information.
+The application uses MongoDB as its main database and Flask with PyMongo for the web application layer. The project demonstrates NoSQL data modeling, embedded documents, document references, CRUD operations, validation, indexing and MongoDB aggregation pipelines.
+The system manages two main collections: users and events. Users contain information such as name, email, department, role and interests. Events contain information about the event, its location, organizer, capacity, tags and embedded registrations.
+The application provides five main functional areas:
+*Dashboard
+*Events
+*Event Details & Registrations
+*Users
+*Analytics
+The database is initialized and populated through reproducible MongoDB scripts stored in the database/ directory.
+
+2. Technologies Used
+Technology	Purpose
+Python 3.14	Application development
+Flask	Web framework
+PyMongo	MongoDB connectivity
+MongoDB	NoSQL database
+MongoDB Shell	Database initialization and seeding
+Jinja2	HTML templating
+HTML/CSS	User interface
+python-dotenv	Environment configuration
+Git/GitHub	Version control
+
+3. NoSQL Data Model
+The application uses two main MongoDB collections in the campus_events database:
+campus_events
+├── users
+└── events
+
+3.1 Users Collection
+A user document contains:
+_id
+firstName
+lastName
+email
+department
+role
+interests[]
+createdAt
+The interests field is represented as an array because one user can have multiple interests. A unique index is created on email to prevent duplicate users.
+
+3.2 Events Collection
+An event document contains:
+_id
+title
+description
+category
+tags[]
+startDate
+endDate
+capacity
+location
+organizerId
+registrations[]
+createdAt
+The location is embedded directly inside the event:
+location
+├── building
+├── room
+└── campus
+Registrations are also embedded:
+registrations[]
+├── userId
+├── registeredAt
+└── status
+The event organizer is represented through organizerId, which references a document in the users collection.
+
+3.3 Modeling Decisions
+Embedding location: Location is embedded because building, room and campus belong directly to an event and are normally displayed together with the event. Embedding avoids the need for a separate location collection and additional queries.
+Embedding registrations: Registrations are embedded within events because registration information is closely associated with a specific event. This also allows MongoDB array operations such as $push and $pull to add and remove registrations directly.
+Referencing users: Users are stored separately because users exist independently from events and can participate in multiple events. The registration document therefore stores userId rather than duplicating the complete user information.
+Referencing the organizer: organizerId references the corresponding user rather than embedding the entire organizer document.
+
+4. Application Architecture
+The application follows a simple layered Flask architecture.
+Browser
+   ↓
+Flask Routes
+   ↓
+Service Layer
+   ↓
+PyMongo
+   ↓
+MongoDB
+
+4.1 Routes
+The routes/ directory contains the Flask route modules:
+dashboard.py
+events.py
+users.py
+analytics.py
+These modules receive HTTP requests and return the appropriate HTML pages.
+
+4.2 Services
+The services/ directory contains database and application logic:
+mongo_service.py
+dashboard_service.py
+event_service.py
+user_service.py
+analytics_service.py
+Separating routes from services keeps database operations and business logic organized.
+
+4.3 Templates
+The templates/ directory contains the Jinja2 HTML templates for the different application pages.
+
+5. Application Pages
+5.1 Events Page
+The Events page displays the complete event list and provides title search, category filtering, tag filtering, upcoming/past filtering, date sorting, capacity indicators, confirmed registration count, create, edit, delete and event details.
+
+5.2 Event Details & Registrations
+The Event Details page displays the complete event information, including description, category, tags, dates, location, organizer, capacity and occupancy.
+Users can be selected from existing users and registered for an event. The application prevents duplicate registrations and rejects confirmed registrations when the event has reached its capacity.
+Registrations are updated directly in the embedded registrations array using MongoDB array operators such as $push and $pull.
+
+5.3 Users Page
+The Users page provides a searchable directory of campus users. It supports search by name or email, department filtering, role filtering, registration count, user creation, editing, deletion and user details.
+The user details page displays the user's information, interests and registered events. It also separates upcoming and past registrations. Users with zero registrations are supported.
+
+5.5 Analytics Page
+The Analytics page contains six MongoDB aggregation analyses required by the project:
+Analysis	Purpose
+A. Registrations by Category:	Events and confirmed registrations by category
+B. Top Five Events:	Ranks events by confirmed registrations and occupancy
+C. Users with No Registration:	Identifies users without event registrations
+D. Above Average Occupancy:	Finds events above average occupancy
+E. Most Used Tags:	Counts tag usage with array aggregation
+F. Events by Month:	Groups events and registrations by month
+
+6. MongoDB Aggregation Focus
+6.1 Users with No Registration
+The users-with-no-registration analysis uses $lookup to connect users with event registrations. The pipeline compares the independent users collection with registration information stored inside event documents.
+users
+  ↓
+$lookup
+  ↓
+match registration references
+  ↓
+identify users without matches
+  ↓
+$project
+  ↓
+$sort
+This analysis is useful for identifying users who have not yet participated in any campus event.
+
+6.2 Events Above Average Occupancy
+The occupancy analysis first calculates confirmed registrations for each event and derives an occupancy percentage:
+confirmed registrations / capacity × 100
+The aggregation then calculates the average occupancy across events and compares each event against that average. The pipeline demonstrates multiple MongoDB aggregation stages, including $filter, $group, $avg, $addFields, $match and $project.
+
+7. Validation and Indexing
+MongoDB schema validation was implemented for both collections. Examples of validation rules include required fields, valid email format, unique email addresses, controlled user roles, non-empty event titles, capacity greater than zero, valid event dates, controlled registration statuses and correct embedded document structures.
+The following indexes are created:
+users.email
+events.startDate
+events.category
+The email index is unique. These indexes support common operations such as finding users by email, sorting events by date and filtering events by category.
+
+8. Difficulties and Limitations
+One of the main challenges was designing a MongoDB model that correctly balanced embedded documents and references.
+Another challenge was implementing registration rules while keeping registration information embedded within events. The application needed to prevent duplicate registrations and prevent confirmed registrations when an event was full.
+The project currently uses a local MongoDB instance and a simple Flask interface. It does not include authentication, cloud deployment or advanced role-based access control.
+
+9. Possible Improvements
+*User authentication and role-based permissions
+*Cloud MongoDB deployment
+*Email notifications and event reminders
+*Pagination for large datasets
+*More advanced dashboards and charts
+*REST API endpoints
+*Automated testing
+*Docker-based deployment
+
+10. Conclusion
+Campus Event Manager demonstrates how MongoDB can be used to build a practical NoSQL application. The project combines document modeling, embedded arrays, references, validation, indexes, CRUD operations and aggregation pipelines within a Flask application.
+The resulting application provides complete management of users, events and registrations while also offering analytical views of event participation.
+The project also demonstrates the advantages of MongoDB's flexible document model, particularly for embedded event locations and registration arrays, while maintaining references for reusable user information.
