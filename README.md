@@ -1,26 +1,30 @@
-CAMPUS EVENT MANAGER 
+# Campus Event Manager
 
-1. Project Overview
+A web application developed for the MSc Data Engineering & Cloud Computing NoSQL project[cite: 1]. The platform leverages MongoDB to manage campus users, event schedules, registrations, and real-time event analytics[cite: 1].
 
-Campus Event Manager is a small web application developed as part of the MSc Data Engineering & Cloud Computing NoSQL project.
+---
 
-The application uses MongoDB to manage campus users, events, registrations and event analytics.
+## 1. Project Overview
 
-The project demonstrates MongoDB document modeling, CRUD operations, embedded documents, references, indexes and aggregation pipelines.
+This project demonstrates core NoSQL and document-database concepts[cite: 1]:
+- Document-oriented data modeling[cite: 1]
+- Embedded documents and array manipulation[cite: 1]
+- Referenced relationships using `ObjectId`[cite: 1]
+- Schema validation and unique indexing[cite: 1]
+- CRUD operations, query filters, and projections[cite: 1]
+- Multi-stage MongoDB Aggregation Pipelines[cite: 1]
 
-2. Technologies
+---
 
-- Python 3.14
-- Flask
-- PyMongo
-- MongoDB
-- MongoDB Shell (mongosh)
-- HTML / CSS
-- Jinja2
-- python-dotenv
+## 2. Tech Stack
 
+- **Backend:** Python 3.14, Flask, Jinja2, python-dotenv[cite: 1]
+- **Database:** MongoDB, PyMongo, MongoDB Shell (`mongosh`)[cite: 1]
+- **Frontend:** HTML5, CSS3[cite: 1]
 
-3. Project Structure
+---
+
+## 3. Project Structure
 
 ```text
 campus-event-manager/
@@ -52,333 +56,155 @@ campus-event-manager/
 ├── config.py
 ├── README.md
 └── requirements.txt
-```
+```[cite: 1]
 
-4. Database
+---
 
-The application uses the following MongoDB database: campus_events
+## 4. Database Architecture
 
-The database contains two main collections: users, events
+- **Database Name:** `campus_events`[cite: 1]
+- **Default Connection URI:** `mongodb://127.0.0.1:27017`[cite: 1]
+- **Collections:** `users`, `events`[cite: 1]
 
-MongoDB is configured locally by default: mongodb://127.0.0.1:27017
-Data Model
-Users
+### Data Models
 
-Each user contains:
+#### `users` Collection
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `_id` | ObjectId | Unique identifier[cite: 1] |
+| `firstName` | String | User's first name[cite: 1] |
+| `lastName` | String | User's last name[cite: 1] |
+| `email` | String | Unique email address (indexed)[cite: 1] |
+| `department` | String | Academic/administrative department[cite: 1] |
+| `role` | String | Assigned role[cite: 1] |
+| `interests` | Array | List of interest tags[cite: 1] |
+| `createdAt` | Date | Record creation timestamp[cite: 1] |
 
-_id
-firstName
-lastName
-email: The email field has a unique index.
-department
-role
-interests
-createdAt
+#### `events` Collection
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `_id` | ObjectId | Unique identifier[cite: 1] |
+| `title` | String | Event title[cite: 1] |
+| `description`| String | Event description[cite: 1] |
+| `category` | String | Event category (indexed)[cite: 1] |
+| `tags` | Array | Associated tag labels[cite: 1] |
+| `startDate` | Date | Event start date/time (indexed)[cite: 1] |
+| `endDate` | Date | Event end date/time[cite: 1] |
+| `capacity` | Number | Maximum participant limit[cite: 1] |
+| `location` | Object | **Embedded document** containing location details[cite: 1] |
+| `organizerId` | ObjectId | **Reference** to the user organizing the event[cite: 1] |
+| `registrations`| Array | **Embedded documents** containing registration records[cite: 1] |
+| `createdAt` | Date | Record creation timestamp[cite: 1] |
 
+**Embedded Registration Subdocument:**
+- `userId` (ObjectId): Reference to registered user[cite: 1]
+- `registeredAt` (Date): Registration timestamp[cite: 1]
+- `status` (String): Registration state (e.g., confirmed, cancelled)[cite: 1]
 
+### Database Indexes
+Created via `database/init.js`:
+- `users.email` (Unique): Enforces email uniqueness across users[cite: 1].
+- `events.startDate`: Optimizes chronologically sorted queries[cite: 1].
+- `events.category`: Optimizes category-based filtering[cite: 1].
 
-5. Events
+---
 
-a. Each event contains:
+## 5. Installation & Setup
 
-_id
-title
-description
-category
-tags
-startDate
-endDate
-capacity
-location: The location is embedded inside the event document.
-organizerId
-registrations
-createdAt
+### Prerequisites
+- Python 3.14+[cite: 1]
+- Local MongoDB Server running on port `27017`[cite: 1]
+- MongoDB Shell (`mongosh`) installed[cite: 1]
 
-b, The registrations array contains embedded registration documents with:
-
-userId
-registeredAt
-status
-
-The event organizer is referenced using organizerId.
-
-Installation
-
-a. Clone the repository
-git clone <https://github.com/Kavyamona7>
+### Step 1: Clone Repository
+```powershell
+git clone [https://github.com/Kavyamona7/campus-event-manager.git](https://github.com/Kavyamona7/campus-event-manager.git)
 cd campus-event-manager
+```[cite: 1]
 
-b. Create a virtual environment
+### Step 2: Virtual Environment Setup
+```powershell
+# Create virtual environment
+python -m venv .venv
 
-c. On Windows PowerShell: python -m venv .venv
+# Activate on Windows PowerShell
+.\.venv\Scripts\Activate.ps1
 
-d. Activate the environment:  .\.venv\Scripts\Activate.ps1
+# Install requirements
+python -m pip install -r requirements.txt
+```[cite: 1]
 
-e. Install dependencies: python -m pip install -r requirements.txt
-MongoDB Configuration
-
-f. Create a .env file in the project root:
-
+### Step 3: Configure Environment Variables
+Create a `.env` file in the project root[cite: 1]:
+```env
 MONGO_URI=mongodb://127.0.0.1:27017
 MONGO_DB_NAME=campus_events
-
-The .env file is excluded from Git using .gitignore.
-
-g. Initialize the Database
-
-Make sure the MongoDB server is running.
-
-h. From the project root, run: mongosh database/init.js
-
-i. The initialization script:
-
-Creates the campus_events database
-Creates the users collection
-Creates the events collection
-Applies MongoDB validation rules
-Creates the required indexes
-Seed the Database
-
-j. Run: mongosh database/seed.js
-
-The seed script inserts sample users, events and registrations.
-
-k. The dataset contains:
-
-15 users
-18 events
-Multiple event categories
-Multiple tags
-40+ registrations
-Future and past events
-Events with zero registrations
-A full-capacity event
-
-The seed script is reproducible and can be executed again after database initialization.
-
-l. Run the Application
-
-m. Activate the virtual environment:  .\.venv\Scripts\Activate.ps1
-
-n. Start the Flask application: python src/app.py
-
-o. Open the application in a browser: http://127.0.0.1:5000/
-
-Application Pages that are visible are:
- 
-1. Dashboard
-
-The Dashboard displays:
-
-Total number of users
-Total number of events
-Number of upcoming events
-Total registrations
-Next five upcoming events
-Most popular event based on confirmed registrations
-
-All information is retrieved from MongoDB.
-
-2. Events
-
-The Events page provides:
-
-Complete event listing
-Search by title
-Category filtering
-Tag filtering
-Upcoming/past filtering
-Date sorting
-Capacity indicators
-Confirmed registration count
-Create event
-Edit event
-Delete event
-Event details
-
-3. Event Details & Registrations
-
-The Event Details page provides:
-
-Event description
-Category
-Tags
-Start and end dates
-Embedded location
-Organizer information
-Capacity
-Confirmed registration count
-Occupancy percentage
-Participant list
-User registration
-
-Registration rules include:
-
-Existing users can be registered
-Duplicate registrations are prevented
-Registration is rejected when the event is full
-Registrations can be cancelled
-Participant information updates immediately
-
-MongoDB array operations such as $push and $pull are used to update embedded registrations.
-
-4. Users
-
-The Users page provides:
-
-User directory
-Search by name or email
-Department filtering
-Role filtering
-Registration count
-Create user
-Edit user
-Delete user
-User details
-
-The user details page displays:
-
-Personal information
-Interests
-Registered events
-Registration status
-Upcoming registration count
-Past registration count
-
-Users with zero registrations are also supported.
-
-5. Analytics
-
-The Analytics page contains six MongoDB aggregation analyses:
-
-A. Registrations by Category
-
-Displays:
-
-Category
-Number of events
-Total confirmed registrations
-B. Top 5 Events
-
-Displays:
-
-Event title
-Category
-Capacity
-Confirmed registrations
-Occupancy percentage
-C. Users With No Registration
-
-Identifies users who are not registered for any event.
-
-D. Events Above Average Occupancy
-
-Calculates the average event occupancy and identifies events whose occupancy is above the average.
-
-E. Most Used Tags
-
-Calculates how frequently each event tag is used.
-
-F. Events by Month
-
-Displays:
-
-Year
-Month
-Number of events
-Confirmed registrations
-MongoDB Features Demonstrated
-
-The project demonstrates the following MongoDB concepts:
-
-Document-oriented data modeling
-Embedded documents
-Arrays
-References using ObjectId
-Schema validation
-Unique indexes
-CRUD operations
-Query filters
-Regular expressions
-Sorting
-Projection
-$push
-$pull
-$filter
-$unwind
-$group
-$lookup
-$match
-$project
-$sort
-$limit
-$addFields
-$avg
-$year
-$month
-Multi-stage aggregation pipelines
-Indexes
-
-The following indexes are created by database/init.js:
-
-Users
-users.email
-
-Unique index preventing duplicate email addresses.
-
-Events
-events.startDate
-events.category
-
-These indexes improve event filtering and sorting operations.
-
-Validation and Error Handling
-
-The application handles several invalid operations, including:
-
-Duplicate email addresses
-Invalid email format
-Empty required fields
-Invalid capacity
-End date before start date
-Invalid ObjectId
-Non-existent event
-Non-existent user
-Duplicate event registration
-Registration when an event is full
-Attempting to delete a user referenced by event registrations
-
-MongoDB validation is also applied at database level.
-
-Security and Configuration
-
-Sensitive configuration is stored in .env.
-
-The following files and directories are excluded from Git:
-
-.env
-.venv/
-__pycache__/
-*.pyc
-
-No passwords, API keys or other secrets are committed to the repository.
-
-Report
-
-The technical project report is available in:
-
-report/project-report.pdf
-
-The report contains:
-
-Project overview
-NoSQL data model
-Modeling decisions
-Application architecture
-Screenshots of the five application pages
-MongoDB aggregation analysis
-Conclusion and possible improvements
-
-Author
-Kavya Basappa
-MSc Data Engineering & Cloud Computing
+```[cite: 1]
+
+### Step 4: Initialize & Seed Database
+Ensure your MongoDB daemon is running, then run[cite: 1]:
+```powershell
+# Run schema validation setup and create collections/indexes
+mongosh database/init.js
+
+# Populate dataset (15 users, 18 events, 40+ registrations)
+mongosh database/seed.js
+```[cite: 1]
+
+### Step 5: Run the Application
+```powershell
+python src/app.py
+```[cite: 1]
+
+Access the web interface at: **`http://127.0.0.1:5000/`**[cite: 1]
+
+---
+
+## 6. Application Modules
+
+### **Dashboard**
+- Global statistics: Total users, total events, upcoming event counts, and total registrations[cite: 1].
+- Quick preview of the next 5 upcoming events[cite: 1].
+- Highlights the most popular event by confirmed attendee count[cite: 1].
+
+### **Events**
+- Search and multi-criteria filtering (by title, category, tag, upcoming/past, and dates)[cite: 1].
+- Visual capacity indicator with real-time confirmed attendee counts[cite: 1].
+- Full CRUD interface (Create, Read, Update, Delete events)[cite: 1].
+
+### **Event Details & Registrations**
+- Displays embedded location details, organizer metadata, and capacity metrics[cite: 1].
+- Real-time occupancy percentage calculation[cite: 1].
+- **Atomic Operations:** Uses `$push` to register and `$pull` to cancel registrations[cite: 1].
+- **Validation Rules:** Blocks duplicate sign-ups and enforces maximum capacity constraints[cite: 1].
+
+### **Users**
+- Search directory by name or email, with department and role filters[cite: 1].
+- User profile detailing registered events, attendance statuses, and historical data[cite: 1].
+- Full user CRUD management with referential integrity checks before deletion[cite: 1].
+
+### **Analytics (Aggregation Pipelines)**
+Advanced aggregation pipelines computing real-time analytics[cite: 1]:
+1. **Registrations by Category:** Aggregates event totals and confirmed seats per category[cite: 1].
+2. **Top 5 Events:** Highlights highest registrations and occupancy percentages[cite: 1].
+3. **Users With No Registration:** Identifies inactive campus accounts[cite: 1].
+4. **Events Above Average Occupancy:** Pinpoints high-performing events using computed averages[cite: 1].
+5. **Most Used Tags:** Evaluates tag distribution using `$unwind` and grouping[cite: 1].
+6. **Events by Month:** Historical breakdown by year and month using `$year` and `$month` operators[cite: 1].
+
+---
+
+## 7. Security & Error Handling
+
+- **Database-Level Guardrails:** MongoDB JSON Schema validation enforces field types, constraints, and valid dates[cite: 1].
+- **Referential Safeguards:** Blocks user deletion if that user is associated with active event registrations[cite: 1].
+- **Input Sanitization:** Validates emails, required inputs, ObjectId formats, and ensures end dates do not precede start dates[cite: 1].
+- **Secret Isolation:** `.env`, `.venv/`, and Python cache artifacts are permanently excluded via `.gitignore`[cite: 1].
+
+---
+
+## 8. Documentation & Author
+
+- **Technical Report:** Complete architectural analysis, modeling decisions, and page screenshots are available in [`report/project-report.pdf`](report/project-report.pdf)[cite: 1].
+- **Author:** Kavya Basappa[cite: 1]
+- **Program:** MSc Data Engineering & Cloud Computing[cite: 1]
