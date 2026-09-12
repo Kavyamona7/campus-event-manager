@@ -22,6 +22,7 @@ The project demonstrates MongoDB document modeling, CRUD operations, embedded do
 
 3. Project Structure
 
+'''text
 campus-event-manager/
 │
 ├── database/
@@ -63,6 +64,7 @@ campus-event-manager/
 ├── .gitignore
 ├── README.md
 └── requirements.txt
+'''
 
 4. Database
 
