@@ -58,10 +58,7 @@ campus-event-manager/
 
 The application uses the following MongoDB database: campus_events
 
-The database contains two main collections:
-
-users
-events
+The database contains two main collections: users, events
 
 MongoDB is configured locally by default: mongodb://127.0.0.1:27017
 Data Model
@@ -72,17 +69,17 @@ Each user contains:
 _id
 firstName
 lastName
-email
+email: The email field has a unique index.
 department
 role
 interests
 createdAt
 
-The email field has a unique index.
+
 
 5. Events
 
-Each event contains:
+a. Each event contains:
 
 _id
 title
@@ -92,14 +89,12 @@ tags
 startDate
 endDate
 capacity
-location
+location: The location is embedded inside the event document.
 organizerId
 registrations
 createdAt
 
-The location is embedded inside the event document.
-
-The registrations array contains embedded registration documents with:
+b, The registrations array contains embedded registration documents with:
 
 userId
 registeredAt
@@ -115,27 +110,27 @@ cd campus-event-manager
 
 b. Create a virtual environment
 
-On Windows PowerShell: python -m venv .venv
+c. On Windows PowerShell: python -m venv .venv
 
-Activate the environment:  .\.venv\Scripts\Activate.ps1
+d. Activate the environment:  .\.venv\Scripts\Activate.ps1
 
-c. Install dependencies: python -m pip install -r requirements.txt
+e. Install dependencies: python -m pip install -r requirements.txt
 MongoDB Configuration
 
-Create a .env file in the project root:
+f. Create a .env file in the project root:
 
 MONGO_URI=mongodb://127.0.0.1:27017
 MONGO_DB_NAME=campus_events
 
 The .env file is excluded from Git using .gitignore.
 
-d. Initialize the Database
+g. Initialize the Database
 
 Make sure the MongoDB server is running.
 
-From the project root, run: mongosh database/init.js
+h. From the project root, run: mongosh database/init.js
 
-The initialization script:
+i. The initialization script:
 
 Creates the campus_events database
 Creates the users collection
@@ -144,11 +139,11 @@ Applies MongoDB validation rules
 Creates the required indexes
 Seed the Database
 
-Run: mongosh database/seed.js
+j. Run: mongosh database/seed.js
 
 The seed script inserts sample users, events and registrations.
 
-The dataset contains:
+k. The dataset contains:
 
 15 users
 18 events
@@ -161,13 +156,13 @@ A full-capacity event
 
 The seed script is reproducible and can be executed again after database initialization.
 
-5. Run the Application
+l. Run the Application
 
-Activate the virtual environment:  .\.venv\Scripts\Activate.ps1
+m. Activate the virtual environment:  .\.venv\Scripts\Activate.ps1
 
-Start the Flask application: python src/app.py
+n. Start the Flask application: python src/app.py
 
-Open the application in a browser: http://127.0.0.1:5000/
+o. Open the application in a browser: http://127.0.0.1:5000/
 
 Application Pages that are visible are:
  
@@ -200,6 +195,7 @@ Create event
 Edit event
 Delete event
 Event details
+
 3. Event Details & Registrations
 
 The Event Details page provides:
