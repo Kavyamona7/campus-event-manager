@@ -22,49 +22,37 @@ The project demonstrates MongoDB document modeling, CRUD operations, embedded do
 
 3. Project Structure
 
-'''text
+```text
 campus-event-manager/
-│
 ├── database/
 │   ├── init.js
 │   └── seed.js
-│
 ├── report/
 │   └── project-report.pdf
-│
 ├── src/
 │   ├── routes/
 │   │   ├── analytics.py
 │   │   ├── dashboard.py
 │   │   ├── events.py
 │   │   └── users.py
-│   │
 │   ├── services/
 │   │   ├── analytics_service.py
 │   │   ├── dashboard_service.py
 │   │   ├── event_service.py
-│   │   ├── mongo_service.py
 │   │   └── user_service.py
-│   │
 │   ├── static/
 │   │   └── css/
 │   │       └── style.css
-│   │
 │   ├── templates/
-│   │   ├── analytics/
-│   │   ├── events/
-│   │   ├── users/
 │   │   ├── base.html
 │   │   └── dashboard.html
-│   │
-│   ├── app.py
-│   └── config.py
-│
+│   └── app.py
 ├── .env
 ├── .gitignore
+├── config.py
 ├── README.md
 └── requirements.txt
-'''
+```
 
 4. Database
 
